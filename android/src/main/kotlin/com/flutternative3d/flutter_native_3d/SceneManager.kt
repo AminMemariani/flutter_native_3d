@@ -239,10 +239,18 @@ class SceneManager(private val context: Context) {
     }
 
     /// Toggle camera orbit/pan/zoom gestures.
-    /// Uses SceneView's cameraManipulator control rather than disabling the
-    /// entire view (which would dim it visually and block future tap events).
+    /// Intercepts touch events at the container level rather than using
+    /// View.isEnabled (which dims the view) or non-existent SceneView properties.
+    private var cameraGesturesEnabled = true
+
     fun setGesturesEnabled(enabled: Boolean) {
-        sceneView.isTouchExplorationEnabled = enabled
+        cameraGesturesEnabled = enabled
+        if (!enabled) {
+            // Block touches from reaching SceneView by adding an intercepting overlay
+            container.setOnTouchListener { _, _ -> true }
+        } else {
+            container.setOnTouchListener(null)
+        }
     }
 
     /**
@@ -259,13 +267,13 @@ class SceneManager(private val context: Context) {
         autoRotateAnimator = null
 
         if (!enabled) {
-            sceneView.isTouchExplorationEnabled = gesturesEnabledBeforeAutoRotate
+            setGesturesEnabled(gesturesEnabledBeforeAutoRotate)
             return
         }
 
         // Save and disable gestures during rotation
-        gesturesEnabledBeforeAutoRotate = sceneView.isTouchExplorationEnabled
-        sceneView.isTouchExplorationEnabled = false
+        gesturesEnabledBeforeAutoRotate = cameraGesturesEnabled
+        setGesturesEnabled(false)
 
         autoRotateAnimator = ValueAnimator.ofFloat(0f, 360f).apply {
             duration = 12_000L // full rotation in 12 seconds (30 deg/s)

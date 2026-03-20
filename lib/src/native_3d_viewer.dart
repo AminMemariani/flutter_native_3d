@@ -203,6 +203,11 @@ class _Native3DViewerState extends State<Native3DViewer> {
     });
 
     widget.onSceneCreated?.call(controller);
+
+    // Trigger the initial model load. Creation params no longer load the
+    // model on the native side (removed to prevent double-load), so the
+    // Dart side must initiate it here.
+    _loadModel(controller, widget.source);
   }
 
   // ---------------------------------------------------------------------------

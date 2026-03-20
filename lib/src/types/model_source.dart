@@ -112,7 +112,7 @@ final class NetworkModelSource extends ModelSource {
 
   /// Equality is based on URL only. Headers are intentionally excluded
   /// because they often contain ephemeral tokens -- changing a token
-  /// should not trigger a model reload via [didUpdateWidget].
+  /// should not trigger a model reload via `didUpdateWidget`.
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

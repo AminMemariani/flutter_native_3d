@@ -191,7 +191,7 @@ enum ModelLoader {
 
     // MARK: - Helpers
 
-    private static func cacheDirectory() -> URL {
+    fileprivate static func cacheDirectory() -> URL {
         let dir = FileManager.default.temporaryDirectory
             .appendingPathComponent("flutter_native_3d", isDirectory: true)
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
@@ -207,17 +207,17 @@ enum ModelLoader {
     }
 
     /// Extract extension from a URL path, stripping query params.
-    private static func sanitizedExtension(_ urlPath: String) -> String {
+    fileprivate static func sanitizedExtension(_ urlPath: String) -> String {
         let pathOnly = urlPath.components(separatedBy: "?").first ?? urlPath
         let ext = (pathOnly as NSString).pathExtension.lowercased()
         return supportedExtensions.contains(ext) ? ext : "glb"
     }
 
-    private static func sha1(_ string: String) -> String {
+    fileprivate static func sha1(_ string: String) -> String {
         return sha1(Data(string.utf8))
     }
 
-    private static func sha1(_ data: Data) -> String {
+    fileprivate static func sha1(_ data: Data) -> String {
         var digest = [UInt8](repeating: 0, count: Int(CC_SHA1_DIGEST_LENGTH))
         data.withUnsafeBytes { bytes in
             _ = CC_SHA1(bytes.baseAddress, CC_LONG(data.count), &digest)
@@ -324,26 +324,6 @@ private class DownloadDelegate: NSObject, URLSessionDownloadDelegate {
         guard !completed else { return }
         completed = true
         completion(result)
-    }
-}
-
-// Make helper methods accessible to DownloadDelegate
-extension ModelLoader {
-    fileprivate static func sanitizedExtension(_ urlPath: String) -> String {
-        let pathOnly = urlPath.components(separatedBy: "?").first ?? urlPath
-        let ext = (pathOnly as NSString).pathExtension.lowercased()
-        return supportedExtensions.contains(ext) ? ext : "glb"
-    }
-
-    fileprivate static func sha1(_ string: String) -> String {
-        return sha1(Data(string.utf8))
-    }
-
-    fileprivate static func cacheDirectory() -> URL {
-        let dir = FileManager.default.temporaryDirectory
-            .appendingPathComponent("flutter_native_3d", isDirectory: true)
-        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        return dir
     }
 }
 

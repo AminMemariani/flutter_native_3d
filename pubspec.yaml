@@ -1,7 +1,17 @@
 name: flutter_native_3d
-description: A Flutter plugin for rendering 3D models natively using SceneKit (iOS) and Filament (Android). Supports glTF and GLB formats.
+description: >-
+  Render glTF and GLB 3D models natively in Flutter using SceneKit on iOS
+  and Filament on Android. No WebView. Supports animations, camera controls,
+  lighting presets, and network loading with progress.
 version: 0.1.0
-homepage: https://github.com/user/flutter_native_3d
+repository: https://github.com/user/flutter_native_3d
+issue_tracker: https://github.com/user/flutter_native_3d/issues
+topics:
+  - 3d
+  - gltf
+  - scenekit
+  - filament
+  - rendering
 
 environment:
   sdk: ^3.11.1
@@ -10,7 +20,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  plugin_platform_interface: ^2.1.0
 
 dev_dependencies:
   flutter_test:

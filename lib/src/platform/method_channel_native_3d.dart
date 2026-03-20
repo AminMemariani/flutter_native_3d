@@ -22,7 +22,7 @@ class MethodChannelNative3D implements Native3DPlatform {
 
   Future<dynamic> _handleNativeEvent(MethodCall call) async {
     if (call.method != 'onEvent') return;
-    final args = call.arguments as Map;
+    final args = call.arguments as Map<Object?, Object?>;
     final type = args['type'] as String;
 
     switch (type) {
@@ -43,7 +43,7 @@ class MethodChannelNative3D implements Native3DPlatform {
   ///
   /// Native side sends: `{type: 'error', code: String?, message: String?}`
   /// The [code] determines which exception subtype we create.
-  static Native3DException _mapNativeError(Map args) {
+  static Native3DException _mapNativeError(Map<Object?, Object?> args) {
     final message = args['message'] as String? ?? 'Unknown native error';
     final code = args['code'] as String?;
     final statusCode = args['statusCode'] as int?;
@@ -63,7 +63,7 @@ class MethodChannelNative3D implements Native3DPlatform {
   @override
   Future<ModelInfo> loadModel(ModelSource source) async {
     try {
-      final result = await _channel.invokeMethod<Map>(
+      final result = await _channel.invokeMethod<Map<Object?, Object?>>(
         'loadModel',
         serializeModelSource(source),
       );
@@ -104,7 +104,7 @@ class MethodChannelNative3D implements Native3DPlatform {
 
   @override
   Future<List<String>> getAnimationNames() async {
-    final result = await _channel.invokeMethod<List>('getAnimationNames');
+    final result = await _channel.invokeMethod<List<Object?>>('getAnimationNames');
     return result?.cast<String>() ?? [];
   }
 
@@ -180,10 +180,17 @@ class MethodChannelNative3D implements Native3DPlatform {
 
   @override
   Future<void> dispose() async {
+    // Detach handler first to prevent new events during teardown.
+    _channel.setMethodCallHandler(null);
     try {
+      // Best-effort: tell native to release resources.
+      // May fail if the native view is already destroyed (hot restart, pop).
       await _channel.invokeMethod('dispose');
+    } on PlatformException {
+      // Native view gone -- expected during hot restart or rapid navigation.
+    } on MissingPluginException {
+      // Plugin not registered -- expected during tests or hot restart.
     } finally {
-      _channel.setMethodCallHandler(null);
       await _eventController.close();
     }
   }

@@ -7,12 +7,10 @@ import 'native_3d_exception.dart';
 ///
 /// ## Event types
 ///
-/// | Event | When | Widget callback |
-/// |-------|------|-----------------|
-/// | [SceneReadyEvent] | Native view initialized, ready for commands | [onSceneCreated] |
-/// | [ModelLoadProgressEvent] | Network download progress (0.0-1.0) | [onModelLoadProgress] |
-/// | [AnimationCompletedEvent] | Non-looping animation finished | via `controller.events` |
-/// | [SceneErrorEvent] | Unexpected native error | [onError] |
+/// - [SceneReadyEvent] -- native view initialized, ready for commands.
+/// - [ModelLoadProgressEvent] -- network download progress (0.0-1.0).
+/// - [AnimationCompletedEvent] -- non-looping animation finished.
+/// - [SceneErrorEvent] -- unexpected native error.
 sealed class SceneEvent {
   const SceneEvent();
 }

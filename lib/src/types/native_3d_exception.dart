@@ -86,7 +86,7 @@ class FormatNotSupportedException extends ModelLoadException {
       : super(code: 'FORMAT_ERROR');
 }
 
-/// A newer [loadModel] call was made before this one completed.
+/// A newer `loadModel` call was made before this one completed.
 ///
 /// This is not a real error -- it's a control flow signal. The widget
 /// handles it automatically. User code can safely ignore it:
